@@ -24,6 +24,13 @@ namespace RebootIT.TimesheetApp.Controllers
             var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff);
             return View(await timesheetDbContext.ToListAsync());
         }
+        public async Task<IActionResult> StaffTimesheet(int Id)
+        {
+            var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.StaffId == Id);
+            ViewData["StaffId"] = Id;
+            return View("Index", await timesheetDbContext.ToListAsync());
+        }
+
 
         // GET: Timesheet/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -47,11 +54,11 @@ namespace RebootIT.TimesheetApp.Controllers
         }
 
         // GET: Timesheet/Create
-        public IActionResult Create()
+        public IActionResult Create(int? StaffId)
         {
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "BillingAddress");
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Address");
-            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email",StaffId);
             return View();
         }
 
